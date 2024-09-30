@@ -58,6 +58,31 @@ export class BaileysConnection {
     };
   }
 
+  private handleUpdateMessage() {
+    return (update) => {
+      const { connection, lastDisconnect } = update;
+
+      if (connection === "close") {
+        const shouldReconnect =
+          (lastDisconnect?.error as Boom)?.output?.statusCode !==
+          DisconnectReason.loggedOut;
+
+        console.log(
+          "Conexão fechada devido a",
+          lastDisconnect?.error,
+          ", reconectar:",
+          shouldReconnect
+        );
+
+        if (shouldReconnect) {
+          this.conn();
+        }
+      } else if (connection === "open") {
+        console.log("Conexão aberta com sucesso");
+      }
+    };
+  }
+
   public getConnection() {
     return this.sock;
   }

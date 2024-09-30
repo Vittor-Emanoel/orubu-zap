@@ -38,7 +38,7 @@ export const sendMessageController = async (
       contactNumber,
       textMessage
     );
-    reply.send({ status: "success", message: result });
+    reply.send({ status: "success", messageId: result });
   } catch (error) {
     console.log(error);
 
