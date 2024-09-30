@@ -6,9 +6,8 @@ import makeWASocket, {
 } from "@whiskeysockets/baileys";
 import path from "node:path";
 
-/* E RESPONSABILIDADE DEVE SER APENAS DE CONEXAO COM O WPP */
 export class BaileysConnection {
-  private sock: WASocket | null = null; // Inicializando como null
+  private sock: WASocket;
 
   constructor() {
     this.conn();
@@ -17,7 +16,7 @@ export class BaileysConnection {
   private async conn() {
     try {
       const { state, saveCreds } = await useMultiFileAuthState(
-        path.resolve(__dirname, "..", "tokens")
+        path.resolve(__dirname, "../", "tokens")
       );
 
       this.sock = makeWASocket({
@@ -59,17 +58,7 @@ export class BaileysConnection {
     };
   }
 
-  public async getConnection(timeout = 5000) {
-    const startTime = Date.now();
-
-    // Aguarda até que a conexão seja estabelecida ou até o timeout
-    while (!this.sock) {
-      if (Date.now() - startTime > timeout) {
-        throw new Error("Timeout ao estabelecer a conexão.");
-      }
-      await new Promise((resolve) => setTimeout(resolve, 100)); // Aguarda 100ms
-    }
-
+  public getConnection() {
     return this.sock;
   }
 }
